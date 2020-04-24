@@ -1,0 +1,13 @@
+tests:
+  build: .
+  stop_signal: SIGKILL
+  dockerfile: Dockerfile
+  tty: true
+  working_dir: $PWD
+  volumes:
+    - $PWD:$PWD
+  links:
+    - redis
+  command: pytest
+redis:
+  image: redis
