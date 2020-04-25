@@ -1,5 +1,9 @@
 # Python requests Circuit Breaker
 
+![Build and test](https://github.com/eelabs/circuit-breaker-python/workflows/Build%20and%20test/badge.svg)
+
+---
+
 A python implementation of the [circuit breaker pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 based on the [ruby implementation](https://github.com/pedro/cb2) by Pedro Belo. 
 
