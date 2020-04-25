@@ -33,9 +33,9 @@ class CircuitBreakerAdapter(HTTPAdapter):
     Usage::
 
       >>> import requests
-      >>> from breaker.storage import InMemoryStorage
-      >>> from breaker.circuit_breaker_percentage import PercentageCircuitBreaker
-      >>> from breaker.circuit_breaker import CircuitBreakerAdapter
+      >>> from requests_circuit_breaker.storage import InMemoryStorage
+      >>> from requests_circuit_breaker.circuit_breaker_percentage import PercentageCircuitBreaker
+      >>> from requests_circuit_breaker.circuit_breaker import CircuitBreakerAdapter
       >>> breaker = PercentageCircuitBreaker("my-service", storage=InMemoryStorage())
       >>> adapter = CircuitBreakerAdapter(breaker)
       >>> session = requests.Session()

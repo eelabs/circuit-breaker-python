@@ -1,5 +1,5 @@
-from breaker.circuit_breaker_percentage import PercentageCircuitBreaker
-from breaker.storage import InMemoryStorage
+from requests_circuit_breaker import PercentageCircuitBreaker
+from requests_circuit_breaker.storage import InMemoryStorage
 
 
 def test_percentage_failed_should_not_trip_breaker_when_less_than_minimum_error_count_reached():

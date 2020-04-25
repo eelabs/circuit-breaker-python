@@ -1,4 +1,4 @@
-from breaker.storage import InMemoryStorage, RedisStorage
+from requests_circuit_breaker.storage import InMemoryStorage, RedisStorage
 import time
 import pytest
 from unittest import mock

@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+codecov = "*"
+pytest-cov = "*"
+urllib3-mock = "*"
+"flake8" = "*"
+pytest = "*"
+
+[packages]
+redis = "*"
+requests = "*"
+
+[requires]
+python_version = "3.8"

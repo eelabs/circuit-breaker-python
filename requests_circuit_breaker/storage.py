@@ -7,13 +7,13 @@ import uuid
 
 class Storage:
 
-    def last_open(self, service_name: str) -> int :
+    def last_open(self, service_name: str) -> int:
         pass
 
     def update_open(self, service_name: str, time_in_seconds: int):
         pass
 
-    def register_event_returning_count(self, key: str, ttl: int) -> int :
+    def register_event_returning_count(self, key: str, ttl: int) -> int:
         pass
 
     @property

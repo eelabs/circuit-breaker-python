@@ -1,6 +1,6 @@
 from requests.models import PreparedRequest, Response
 
-from breaker.circuit_breaker import CircuitBreaker, CircuitBreakerAdapter
+from requests_circuit_breaker import CircuitBreaker, CircuitBreakerAdapter
 import requests
 from urllib3_mock import Responses
 

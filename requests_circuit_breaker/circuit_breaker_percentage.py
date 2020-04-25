@@ -1,7 +1,7 @@
 from requests.models import PreparedRequest, Response
 import time
-from breaker.circuit_breaker import CircuitBreaker
-from breaker.storage import Storage
+from requests_circuit_breaker.circuit_breaker import CircuitBreaker
+from requests_circuit_breaker.storage import Storage
 
 
 class PercentageCircuitBreaker(CircuitBreaker):
@@ -20,8 +20,8 @@ class PercentageCircuitBreaker(CircuitBreaker):
 
     Usage::
 
-      >>> from breaker.circuit_breaker_percentage import PercentageCircuitBreaker
-      >>> from breaker.storage import InMemoryStorage as Storage
+      >>> from requests_circuit_breaker.circuit_breaker_percentage import PercentageCircuitBreaker
+      >>> from requests_circuit_breaker.storage import InMemoryStorage as Storage
       >>> breaker = PercentageCircuitBreaker("my-service", storage=InMemoryStorage())
 
     """

@@ -8,6 +8,6 @@ tests:
     - $PWD:$PWD
   links:
     - redis
-  command: pytest
+  command: ["make", "init", "ci", "coverage"]
 redis:
   image: redis
