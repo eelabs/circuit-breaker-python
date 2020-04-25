@@ -1,7 +1,8 @@
 # Python requests Circuit Breaker
 
 ![Build and test](https://github.com/eelabs/circuit-breaker-python/workflows/Build%20and%20test/badge.svg)
-
+[![codecov](https://codecov.io/gh/eelabs/circuit-breaker-python/branch/master/graph/badge.svg)](https://codecov.io/gh/eelabs/circuit-breaker-python)
+[![Publish docs](https://github.com/eelabs/circuit-breaker-python/workflows/Publish%20docs/badge.svg)](https://eelabs.github.io/circuit-breaker-python)
 ---
 
 A python implementation of the [circuit breaker pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
