@@ -15,7 +15,7 @@ flake8:
 	pipenv run flake8 --ignore=E501 breaker # ignore max line length
 
 coverage:
-	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=requests-circuit-breaker tests
+	pipenv run py.test --cov-config .coveragerc --verbose --cov-report term --cov-report xml --cov=requests_circuit_breaker tests
 
 publish:
 	pip install 'twine>=1.5.0'
