@@ -28,7 +28,7 @@ until an amount of time has elapsed, e.g
 
 Configure the circuit breaker
 ```python
-from requests_circuit_breaker.circuit_breaker_percentage import PercentageCircuitBreaker
+from requests_circuit_breaker import PercentageCircuitBreaker
 from requests_circuit_breaker.storage import RedisStorage
 
 breaker = PercentageCircuitBreaker("my-service", 
@@ -43,7 +43,7 @@ breaker = PercentageCircuitBreaker("my-service",
 Then register it with `requests`
 ```python
 import requests
-from requests_circuit_breaker.circuit_breaker import CircuitBreakerAdapter
+from requests_circuit_breaker import CircuitBreakerAdapter
 
 adapter = CircuitBreakerAdapter(breaker)
 session = requests.Session()
