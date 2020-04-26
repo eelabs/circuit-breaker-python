@@ -8,13 +8,17 @@ const siteConfig = {
   baseUrl: `/${projectName}/`,
   projectName: projectName,
   organizationName: owner,
+  enableUpdateBy: true,
+  enableUpdateTime: true,
   headerLinks: [
     { search: false },
     { doc: 'getting-started', label: 'Docs' }
   ],
+  headerIcon: 'img/logo.svg',
+  favicon: 'img/favicon.png',
   colors: {
-    primaryColor: '#58251e',
-    secondaryColor: '#3d1915'
+    primaryColor: '#1795d4',
+    secondaryColor: '#cdeeff'
   },
   copyright: `Copyright © ${new Date().getFullYear()} ${owner}.`,
   highlight: {
@@ -22,7 +26,6 @@ const siteConfig = {
   },
   onPageNav: 'separate',
   cleanUrl: true,
-  docsSideNaveCollapsible: true,
   repoUrl: `https://github.com/${owner}/${projectName}`,
   scripts: [
     'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.4/mermaid.min.js',

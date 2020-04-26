@@ -28,7 +28,7 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    'Redis storage': ['redis>=3.4.1'],
+    'Redis': ['redis>=3.4.1'],
 }
 
 # The rest you shouldn't have to touch too much :)
