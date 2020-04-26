@@ -5,21 +5,35 @@ from typing import Union, Tuple, Text, Container, Optional, Mapping
 from requests.adapters import HTTPAdapter
 from requests.models import Response, PreparedRequest
 
+from requests_circuit_breaker.storage import Storage
+
 
 class CircuitBreaker(object):
 
-    def __init__(self, service: str):
+    def __init__(self, service: str, storage: Storage = None, monitors=[]):
         self.service = service
+        self.storage = storage
+        self.monitors = monitors
 
     @property
     def is_closed(self):
         return True
 
     def register_success(self, request: PreparedRequest, response: Response):
-        pass
+        for monitor in self.monitors:
+            monitor.success(self.service, request, response)
 
     def register_error(self, request: PreparedRequest, response: Response):
-        pass
+        for monitor in self.monitors:
+            monitor.failure(self.service, request, response)
+
+    def trip(self):
+        for monitor in self.monitors:
+            monitor.trip(self.service)
+
+    def reset(self):
+        for monitor in self.monitors:
+            monitor.reset(self.service)
 
 
 class CircuitBreakerAdapter(HTTPAdapter):

@@ -1,7 +1,9 @@
 from requests.models import PreparedRequest, Response
 import time
 from requests_circuit_breaker.circuit_breaker import CircuitBreaker
+from requests_circuit_breaker.monitoring import Monitor
 from requests_circuit_breaker.storage import Storage
+from typing import List
 
 
 class PercentageCircuitBreaker(CircuitBreaker):
@@ -25,13 +27,12 @@ class PercentageCircuitBreaker(CircuitBreaker):
       >>> breaker = PercentageCircuitBreaker("my-service", storage=InMemoryStorage())
 
     """
-    def __init__(self, service: str, ttl: int = 60, percent_failed: int = 10, re_enable_after_seconds: int = 180,
-                 storage: Storage = None, minimum_failures=5):
-        super().__init__(service)
+    def __init__(self, service: str, storage: Storage = None, monitors: List[Monitor] = None, ttl: int = 60,
+                 percent_failed: int = 10, re_enable_after_seconds: int = 180, minimum_failures=5):
+        super().__init__(service + "-percentCB", storage=storage, monitors=monitors if monitors else [])
         self.ttl = ttl
         self.percent_failed = percent_failed
         self.re_enable_after_seconds = re_enable_after_seconds
-        self.storage = storage
         self._last_open = 0
         self.minimum_events = minimum_failures
         storage.service_name = self.service
@@ -47,12 +48,16 @@ class PercentageCircuitBreaker(CircuitBreaker):
             return self._last_open < interval
 
     def register_success(self, request: PreparedRequest, response: Response):
+        super().register_success(request, response)
         self.storage.register_event_returning_count("{0}-{1}".format(self.service, "count"), self.ttl)
         if self._last_open < time.time() - self.re_enable_after_seconds:
             self.storage.update_open(self.service, 0)
+            self.reset()
 
     def register_error(self, request: PreparedRequest, response: Response):
+        super().register_error(request, response)
         total = self.storage.register_event_returning_count("{0}-{1}".format(self.service, "count"), self.ttl)
         errors = self.storage.register_event_returning_count("{0}-{1}".format(self.service, "error"), self.ttl)
         if errors >= self.minimum_events and (100 / total * errors) >= self.percent_failed:
             self.storage.update_open(self.service, int(time.time()))
+            self.trip()

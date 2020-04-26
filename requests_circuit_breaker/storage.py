@@ -17,8 +17,8 @@ class Storage:
         pass
 
     @property
-    def registered_services(self) -> int:
-        pass
+    def registered_services(self) -> set:
+        return set([])
 
 
 class InMemoryStorage(Storage):
