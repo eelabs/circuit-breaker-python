@@ -4,6 +4,7 @@ from requests_circuit_breaker import CircuitBreaker, CircuitBreakerAdapter
 import requests
 from urllib3_mock import Responses
 
+from requests_circuit_breaker.storage import Storage
 
 responses = Responses('requests.packages.urllib3')
 
@@ -63,7 +64,7 @@ def test_server_request_with_open_circuit():
 class StubCircuitBreaker(CircuitBreaker):
 
     def __init__(self, service_name: str, circuit_closed=True):
-        super().__init__(service_name)
+        super().__init__(service_name, storage=Storage())
         self._error_count = 0
         self._success_count = 0
         self._circuit_closed = circuit_closed
@@ -72,8 +73,8 @@ class StubCircuitBreaker(CircuitBreaker):
     def is_closed(self):
         return self._circuit_closed
 
-    def register_error(self, request: PreparedRequest, response: Response):
+    def register_error(self, request: PreparedRequest, response: Response, elapsed: int):
         self._error_count += 1
 
-    def register_success(self, request: PreparedRequest, response: Response):
+    def register_success(self, request: PreparedRequest, response: Response, elapsed: int):
         self._success_count += 1

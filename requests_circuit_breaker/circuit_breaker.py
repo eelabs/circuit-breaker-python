@@ -1,3 +1,4 @@
+import time
 from io import BytesIO
 from dataclasses import dataclass
 from typing import Union, Tuple, Text, Container, Optional, Mapping
@@ -19,13 +20,13 @@ class CircuitBreaker(object):
     def is_closed(self):
         return True
 
-    def register_success(self, request: PreparedRequest, response: Response):
+    def register_success(self, request: PreparedRequest, response: Response, elapsed: int):
         for monitor in self.monitors:
-            monitor.success(self.service, request, response)
+            monitor.success(self.service, request, response, elapsed)
 
-    def register_error(self, request: PreparedRequest, response: Response):
+    def register_error(self, request: PreparedRequest, response: Response, elapsed: int):
         for monitor in self.monitors:
-            monitor.failure(self.service, request, response)
+            monitor.failure(self.service, request, response, elapsed)
 
     def trip(self):
         for monitor in self.monitors:
@@ -68,11 +69,13 @@ class CircuitBreakerAdapter(HTTPAdapter):
              cert: Union[None, Union[bytes, Text], Container[Union[bytes, Text]]] = ...,
              proxies: Optional[Mapping[str, str]] = ...) -> Response:
         if self.breaker.is_closed:
+            start = time.process_time_ns()
             response = super().send(request, stream, timeout, verify, cert, proxies)
+            elapsed = time.process_time_ns() - start
             if response.status_code > 499:
-                self.breaker.register_error(request, response)
+                self.breaker.register_error(request, response, elapsed)
             else:
-                self.breaker.register_success(request, response)
+                self.breaker.register_success(request, response, elapsed)
             return response
         else:
             return self.build_response(request, DummyResponse(self.breaker.service))

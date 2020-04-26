@@ -12,7 +12,7 @@ def test_monitors_get_called_on_success():
     breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
     req = mock.MagicMock()
     res = mock.MagicMock()
-    breaker.register_success(req, res)
+    breaker.register_success(req, res, 20)
     assert monitor1.success_count == 1
     assert monitor2.success_count == 1
 
@@ -23,7 +23,7 @@ def test_monitors_get_called_on_failure():
     breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
     req = mock.MagicMock()
     res = mock.MagicMock()
-    breaker.register_error(req, res)
+    breaker.register_error(req, res, 10)
     assert monitor1.failure_count == 1
     assert monitor2.failure_count == 1
 
@@ -41,9 +41,9 @@ def test_monitors_get_called_on_reset():
     monitor1 = TestMonitor()
     monitor2 = TestMonitor()
     breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
-    breaker.trip()
-    assert monitor1.trip_count == 1
-    assert monitor2.trip_count == 1
+    breaker.reset()
+    assert monitor1.reset_count == 1
+    assert monitor2.reset_count == 1
 
 
 class TestMonitor(Monitor):
@@ -54,12 +54,12 @@ class TestMonitor(Monitor):
         self.trip_count = 0
         self.reset_count = 0
 
-    def success(self, service: str, request: PreparedRequest, response: Response):
-        super().success(service, request, response)
+    def success(self, service: str, request: PreparedRequest, response: Response, elapsed: int):
+        super().success(service, request, response, elapsed)
         self.success_count += 1
 
-    def failure(self, service: str, request: PreparedRequest, response: Response):
-        super().failure(service, request, response)
+    def failure(self, service: str, request: PreparedRequest, response: Response, elapsed: int):
+        super().failure(service, request, response, elapsed)
         self.failure_count += 1
 
     def trip(self, service: str):

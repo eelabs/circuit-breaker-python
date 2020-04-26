@@ -47,15 +47,15 @@ class PercentageCircuitBreaker(CircuitBreaker):
             self._last_open = self.storage.last_open(self.service)
             return self._last_open < interval
 
-    def register_success(self, request: PreparedRequest, response: Response):
-        super().register_success(request, response)
+    def register_success(self, request: PreparedRequest, response: Response, elapsed: int):
+        super().register_success(request, response, elapsed)
         self.storage.register_event_returning_count("{0}-{1}".format(self.service, "count"), self.ttl)
         if self._last_open < time.time() - self.re_enable_after_seconds:
             self.storage.update_open(self.service, 0)
             self.reset()
 
-    def register_error(self, request: PreparedRequest, response: Response):
-        super().register_error(request, response)
+    def register_error(self, request: PreparedRequest, response: Response, elapsed: int):
+        super().register_error(request, response, elapsed)
         total = self.storage.register_event_returning_count("{0}-{1}".format(self.service, "count"), self.ttl)
         errors = self.storage.register_event_returning_count("{0}-{1}".format(self.service, "error"), self.ttl)
         if errors >= self.minimum_events and (100 / total * errors) >= self.percent_failed:

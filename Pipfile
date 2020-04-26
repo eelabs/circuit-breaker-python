@@ -13,6 +13,7 @@ pytest = "*"
 [packages]
 redis = "*"
 requests = "*"
+pynamodb = "*"
 
 [requires]
 python_version = "3.8"
