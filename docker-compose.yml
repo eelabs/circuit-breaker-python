@@ -8,6 +8,10 @@ tests:
     - $PWD:$PWD
   links:
     - redis
+    - dynamodb
   command: ["make", "init", "ci", "coverage"]
 redis:
   image: redis
+dynamodb:
+  image: amazon/dynamodb-local:latest
+  command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]

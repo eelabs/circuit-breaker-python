@@ -9,6 +9,7 @@ pytest-cov = "*"
 urllib3-mock = "*"
 "flake8" = "*"
 pytest = "*"
+pytest-env = "*"
 
 [packages]
 redis = "*"

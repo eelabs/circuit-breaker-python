@@ -5,7 +5,7 @@ import uuid
 import time
 import os
 
-MONITOR_TTL = os.environ.get('MONITOR_TTL', 60*60*24*7)
+MONITOR_TTL = os.getenv('MONITOR_TTL', 60*60*24*7)
 
 
 class WriteToDynamoMonitor(Monitor):
@@ -15,9 +15,9 @@ class WriteToDynamoMonitor(Monitor):
         pass
 
     def failure(self, service: str, request: PreparedRequest, response: Response, elapsed: int):
-        request_headers = [HeaderAttribute(key, value) for key, value in request.headers.items()]
+        request_headers = [HeaderAttribute(key=key, value=value) for key, value in request.headers.items()]
         outbound = OutboundRequest(body=request.body, headers=request_headers)
-        response_headers = [HeaderAttribute(key, value) for key, value in response.headers.items()]
+        response_headers = [HeaderAttribute(key=key, value=value) for key, value in response.headers.items()]
         inbound = InboundResponse(body=response.text, status=response.status_code, headers=response_headers)
         entry = ServiceMonitor(service,
                                str(uuid.uuid4()),
@@ -28,6 +28,7 @@ class WriteToDynamoMonitor(Monitor):
                                elapsed_time=elapsed,
                                ttl=int(time.time())+MONITOR_TTL)
         entry.save()
+        return entry
 
     def trip(self, service: str):
         entry = ServiceMonitor(service,
@@ -36,6 +37,7 @@ class WriteToDynamoMonitor(Monitor):
                                event_type="TRIP",
                                ttl=int(time.time())+MONITOR_TTL)
         entry.save()
+        return entry
 
     def reset(self, service: str):
         entry = ServiceMonitor(service,
@@ -44,3 +46,4 @@ class WriteToDynamoMonitor(Monitor):
                                event_type="RESET",
                                ttl=int(time.time())+MONITOR_TTL)
         entry.save()
+        return entry
