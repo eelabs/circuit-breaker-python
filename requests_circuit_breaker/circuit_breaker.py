@@ -11,10 +11,11 @@ from requests_circuit_breaker.storage import Storage
 
 class CircuitBreaker(object):
 
-    def __init__(self, service: str, storage: Storage = None, monitors=[]):
-        self.service = service
+    def __init__(self, service: str, breaker_type: str, storage: Storage = None, monitors=[], **kwargs):
+        self.service = "{0}-{1}".format(service, breaker_type)
         self.storage = storage
         self.monitors = monitors
+        self.storage.register_breaker(breaker_type, service, **kwargs)
 
     @property
     def is_closed(self):

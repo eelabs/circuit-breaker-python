@@ -64,7 +64,7 @@ def test_server_request_with_open_circuit():
 class StubCircuitBreaker(CircuitBreaker):
 
     def __init__(self, service_name: str, circuit_closed=True):
-        super().__init__(service_name, storage=Storage())
+        super().__init__(service_name, "stub-breaker", storage=Storage())
         self._error_count = 0
         self._success_count = 0
         self._circuit_closed = circuit_closed

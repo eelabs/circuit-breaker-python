@@ -23,20 +23,20 @@ class PercentageCircuitBreaker(CircuitBreaker):
     Usage::
 
       >>> from requests_circuit_breaker.circuit_breaker_percentage import PercentageCircuitBreaker
-      >>> from requests_circuit_breaker.storage import InMemoryStorage as Storage
+      >>> from requests_circuit_breaker.storage import InMemoryStorage
       >>> breaker = PercentageCircuitBreaker("my-service", storage=InMemoryStorage())
 
     """
     def __init__(self, service: str, storage: Storage = None, monitors: List[Monitor] = None, ttl: int = 60,
                  percent_failed: int = 10, re_enable_after_seconds: int = 180, minimum_failures=5):
-        super().__init__(service + "-percentCB", storage=storage, monitors=monitors if monitors else [])
+        super().__init__(service, "PercentCB", storage=storage, monitors=monitors if monitors else [], ttl=ttl,
+                         percent_failed=percent_failed, re_enable_after_seconds=re_enable_after_seconds,
+                         minimum_failures=minimum_failures)
         self.ttl = ttl
         self.percent_failed = percent_failed
         self.re_enable_after_seconds = re_enable_after_seconds
         self._last_open = 0
         self.minimum_events = minimum_failures
-        storage.service_name = self.service
-        storage.ttl = ttl
 
     @property
     def is_closed(self):

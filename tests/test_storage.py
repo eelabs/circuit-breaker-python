@@ -24,10 +24,15 @@ def test_last_open_is_retained(storage):
 
 
 @pytest.mark.parametrize("storage", [InMemoryStorage(), RedisStorage()])
+def test_last_open_initializes_to_zero(storage):
+    service = str(uuid.uuid4())
+    assert storage.last_open(service) == 0
+
+
+@pytest.mark.parametrize("storage", [InMemoryStorage(), RedisStorage()])
 def test_set_of_services_maintained_dynamically(storage):
     service = str(uuid.uuid4())
-    trip_time = storage.last_open(service)
-    assert trip_time == 0
+    storage.register_breaker(service, "BreakerType", config="Value")
     assert service in storage.registered_services
 
 

@@ -29,6 +29,7 @@ REQUIRED = [
 # What packages are optional?
 EXTRAS = {
     'Redis': ['redis>=3.4.1'],
+    'Monitor': ['pynamodb>=4.3.1']
 }
 
 # The rest you shouldn't have to touch too much :)

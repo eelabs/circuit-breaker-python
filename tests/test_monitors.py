@@ -9,7 +9,7 @@ from unittest import mock
 def test_monitors_get_called_on_success():
     monitor1 = TestMonitor()
     monitor2 = TestMonitor()
-    breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
+    breaker = CircuitBreaker("my-service", "dummy-breaker", storage=Storage(), monitors=[monitor1, monitor2])
     req = mock.MagicMock()
     res = mock.MagicMock()
     breaker.register_success(req, res, 20)
@@ -20,7 +20,7 @@ def test_monitors_get_called_on_success():
 def test_monitors_get_called_on_failure():
     monitor1 = TestMonitor()
     monitor2 = TestMonitor()
-    breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
+    breaker = CircuitBreaker("my-service", "dummy-breaker", storage=Storage(), monitors=[monitor1, monitor2])
     req = mock.MagicMock()
     res = mock.MagicMock()
     breaker.register_error(req, res, 10)
@@ -31,7 +31,7 @@ def test_monitors_get_called_on_failure():
 def test_monitors_get_called_on_trip():
     monitor1 = TestMonitor()
     monitor2 = TestMonitor()
-    breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
+    breaker = CircuitBreaker("my-service", "dummy-breaker", storage=Storage(), monitors=[monitor1, monitor2])
     breaker.trip()
     assert monitor1.trip_count == 1
     assert monitor2.trip_count == 1
@@ -40,7 +40,7 @@ def test_monitors_get_called_on_trip():
 def test_monitors_get_called_on_reset():
     monitor1 = TestMonitor()
     monitor2 = TestMonitor()
-    breaker = CircuitBreaker("my-service", storage=Storage(), monitors=[monitor1, monitor2])
+    breaker = CircuitBreaker("my-service", "dummy-breaker", storage=Storage(), monitors=[monitor1, monitor2])
     breaker.reset()
     assert monitor1.reset_count == 1
     assert monitor2.reset_count == 1

@@ -1,7 +1,6 @@
 import time
 from collections import defaultdict
 import os
-import redis
 import uuid
 
 
@@ -20,6 +19,9 @@ class Storage:
     def registered_services(self) -> set:
         return set([])
 
+    def register_breaker(self, service: str, breaker_type: str, **config):
+        pass
+
 
 class InMemoryStorage(Storage):
 
@@ -27,10 +29,9 @@ class InMemoryStorage(Storage):
         super().__init__(*args, **kwargs)
         self.service_events = defaultdict(list)
         self._last_open = defaultdict(int)
-        self._services = set()
+        self._services = {}
 
     def last_open(self, service_name):
-        self._services.add(service_name)
         return self._last_open[service_name]
 
     def update_open(self, service_name: str, time_in_seconds: int):
@@ -49,7 +50,12 @@ class InMemoryStorage(Storage):
 
     @property
     def registered_services(self):
-        return self._services
+        return self._services.keys()
+
+    def register_breaker(self, service: str, breaker_type: str, **config):
+        entries = config.copy()
+        entries['type'] = breaker_type
+        self._services[service] = entries
 
 
 class RedisStorage(Storage):
@@ -57,14 +63,13 @@ class RedisStorage(Storage):
 
     def __init__(self):
         super().__init__()
+        import redis
         self._client = redis.Redis(host=os.getenv('REDIS_HOST', 'localhost'))
         self._last_open = None
 
     def last_open(self, service_name) -> int:
         result = self._client.get(service_name)
         if result is None:
-            self._client.set(service_name, 0)
-            self._client.sadd(self.ALL_BREAKERS, service_name)
             return 0
         else:
             return int(str(result, "utf-8"))
@@ -87,3 +92,11 @@ class RedisStorage(Storage):
     @property
     def registered_services(self):
         return set([str(breaker, "utf-8") for breaker in self._client.smembers(self.ALL_BREAKERS)])
+
+    def register_breaker(self, service: str, breaker_type: str, **config):
+        entries = config.copy()
+        entries['type'] = breaker_type
+        p = self._client.pipeline()
+        p.hmset(service, entries)
+        p.sadd(self.ALL_BREAKERS, service)
+        p.execute()
