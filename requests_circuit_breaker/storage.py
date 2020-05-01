@@ -97,6 +97,6 @@ class RedisStorage(Storage):
         entries = config.copy()
         entries['type'] = breaker_type
         p = self._client.pipeline()
-        p.hmset(service, entries)
+        p.hmset("{0}-{1}".format(service, "config"), entries)
         p.sadd(self.ALL_BREAKERS, service)
         p.execute()

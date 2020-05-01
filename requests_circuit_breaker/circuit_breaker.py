@@ -15,7 +15,7 @@ class CircuitBreaker(object):
         self.service = "{0}-{1}".format(service, breaker_type)
         self.storage = storage
         self.monitors = monitors
-        self.storage.register_breaker(breaker_type, service, **kwargs)
+        self.storage.register_breaker(self.service, breaker_type, **kwargs)
 
     @property
     def is_closed(self):

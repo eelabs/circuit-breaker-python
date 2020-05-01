@@ -1,3 +1,4 @@
+from requests_circuit_breaker import PercentageCircuitBreaker
 from requests_circuit_breaker.storage import InMemoryStorage, RedisStorage
 import time
 import pytest
@@ -30,10 +31,16 @@ def test_last_open_initializes_to_zero(storage):
 
 
 @pytest.mark.parametrize("storage", [InMemoryStorage(), RedisStorage()])
-def test_set_of_services_maintained_dynamically(storage):
+def test_set_of_services_maintained(storage):
     service = str(uuid.uuid4())
     storage.register_breaker(service, "BreakerType", config="Value")
     assert service in storage.registered_services
+
+
+@pytest.mark.parametrize("storage", [InMemoryStorage(), RedisStorage()])
+def test_service_config_is_stored(storage):
+    PercentageCircuitBreaker("LookupAddresses", storage=storage)
+    assert "LookupAddresses-PercentCB" in storage.registered_services
 
 
 @mock.patch('time.time', mock.MagicMock(return_value=12345))
